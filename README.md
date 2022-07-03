@@ -7,11 +7,7 @@ The script used the following parameters:
 ## How to run the script
 1. Clone this repository
 2. Make the script executable
-        ```
-        sudo chmod -x encrypt_decrypt.sh
-        ```
+        -```sudo chmod -x encrypt_decrypt.sh```
 3. Run the script
-        ```
-        ./encrypt_decrypt.sh -m enc -s "This is a sample string" -p SuperS3curePassw0rd!
-        ./encrypt_decrypt.sh -m dev -s "U2FsdGVkX1/mgl7Z+Y1cmNATJD/CnTHEFLlKhEwwUlpw8YYchYDoTAzMFGI20bIR" -p SuperS3curePassw0rd!
-        ```
+        -```./encrypt_decrypt.sh -m enc -s "This is a sample string" -p SuperS3curePassw0rd!```
+        -```./encrypt_decrypt.sh -m dev -s "U2FsdGVkX1/mgl7Z+Y1cmNATJD/CnTHEFLlKhEwwUlpw8YYchYDoTAzMFGI20bIR" -p SuperS3curePassw0rd!```
