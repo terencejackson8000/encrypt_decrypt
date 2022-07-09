@@ -20,7 +20,20 @@ fi
 #if the mechanism is encryption => encrypt the string, if the mechanism is decryption => decrypt the string
 if [ $mechanism == 'enc' ]
     then
-    if [ -f "$string" ]
+    #Check if input string is a directory
+    if [ -d "$string" ]
+        then
+        #Get the last folder of the provided path
+        dir=$(basename $string)
+        #Compress the folder
+        tar -czvf "${dir}.tar.gz" $string
+        #Encrypt the tar file
+        openssl enc -e -a -in "${dir}.tar.gz" -aes-256-cbc -salt -pass pass:$password -pbkdf2 -base64 -out "${dir}.enc"
+        #Delete the tar file
+        rm "${dir}.tar.gz"
+        echo "Folder encryption done"
+    #Check if input string is a file
+    elif [ -f "$string" ]
         then 
         openssl enc -e -a -in $string -aes-256-cbc -salt -pass pass:$password -pbkdf2 -base64 -out "${string}.enc"
         echo "File encryption done"
