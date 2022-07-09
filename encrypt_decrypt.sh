@@ -16,13 +16,27 @@ if [ -z "$mechanism" ] || [ -z "$string" ] || [ -z "$password" ]
     exit 0
 fi
 
+
 #if the mechanism is encryption => encrypt the string, if the mechanism is decryption => decrypt the string
 if [ $mechanism == 'enc' ]
     then
-    echo $string | openssl enc -base64 -e -aes-256-cbc -salt -pass pass:$password -pbkdf2
+    if [ -f "$string" ]
+        then 
+        openssl enc -e -a -in $string -aes-256-cbc -salt -pass pass:$password -pbkdf2 -base64 -out "${string}.enc"
+        echo "File encryption done"
+    else
+        echo $string | openssl enc -base64 -e -aes-256-cbc -salt -pass pass:$password -pbkdf2
+    fi
 elif [ $mechanism == 'dec' ]
     then
-    echo $string | openssl enc -base64 -d -aes-256-cbc -salt -pass pass:$password -pbkdf2
+    if [ -f "$string" ]
+        then
+        new_str=$(echo $string | sed 's/.enc//')
+        openssl enc -d -a -in $string -aes-256-cbc -salt -pass pass:$password -pbkdf2 -base64 -out $new_str
+        echo "File decryption done"
+    else
+        echo $string | openssl enc -base64 -d -aes-256-cbc -salt -pass pass:$password -pbkdf2
+    fi
 else
     echo "Mechanism (-m) must be enc for encryption or dec for decryption"
 fi
