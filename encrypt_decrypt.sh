@@ -25,23 +25,21 @@ if [[ "$mechanism" != "enc" && "$mechanism" != "dec" ]]; then
   exit 1
 fi
 
-if [ "$mechanism" == "enc" ]; then
-  if [ -d "$string" ]; then
-    # Get the last folder of the provided path
-    dir="$(basename "$string")"
-    # Compress the folder
-    tar -czvf "${dir}.tar.gz" "$string"
-    # Encrypt the tar file
-    openssl enc -e -a -in "${dir}.tar.gz" -aes-256-cbc -salt -pass "pass:$password" -pbkdf2 -base64 -out "${dir}.enc"
-    # Delete the tar file
-    rm "${dir}.tar.gz"
-    echo "Folder encryption done"
-  elif [ -f "$string" ]; then
-    openssl enc -e -a -in "$string" -aes-256-cbc -salt -pass "pass:$password" -pbkdf2 -base64 -out "${string}.enc"
-    echo "File encryption done"
-  else
-    echo "$string" | openssl enc -base64 -e -aes-256-cbc -salt -pass "pass:$password" -pbkdf2
-  fi
+if [ -d "$string" ]; then
+  # Get the last folder of the provided path
+  dir="$(basename "$string")"
+  # Compress the folder
+  tar -czvf "${dir}.tar.gz" "$string"
+  # Encrypt the tar file
+  openssl enc -e -a -in "${dir}.tar.gz" -aes-256-cbc -salt -pass "pass:$password" -pbkdf2 -base64 -out "${dir}.enc"
+  # Delete the tar file
+  rm "${dir}.tar.gz"
+  echo "Folder encryption done"
+elif [ -f "$string" ]; then
+  openssl enc -e -a -in "$string" -aes-256-cbc -salt -pass "pass:$password" -pbkdf2 -base64 -out "${string}.enc"
+  echo "File encryption done"
+else
+  echo "$string" | openssl enc -base64 -e -aes-256-cbc -salt -pass "pass:$password" -pbkdf2
 fi
 
 if [ "$mechanism" == "dec" ]; then
@@ -50,6 +48,6 @@ if [ "$mechanism" == "dec" ]; then
     openssl enc -d -a -in "$string" -aes-256-cbc -salt -pass "pass:$password" -pbkdf2 -base64 -out "$new_str"
     echo "File decryption done"
   else
-    echo "$string" | openssl enc -base64 -d -aes-256-cbc -salt -pass "pass:$password" -pbkdf2
+    echo "$string" | openssl enc -base64 -d -aes
   fi
 fi
